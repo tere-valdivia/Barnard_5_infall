@@ -1,5 +1,6 @@
 import aplpy
 import astropy.units as u
+from astropy.constants import G
 import sys
 import numpy as np
 from scipy import stats
@@ -112,3 +113,36 @@ def primary_beam_alma(freq, diameter=12):
 	else:
 		print('Please select either 12 or 7 to calculate the primary beam FWHM for a 12m or 7m antenna')
 		return
+	
+	
+def distancepix(x, y, x0, y0):
+    #supports np.array
+    return np.sqrt((x - x0) ** 2 + (y - y0) ** 2)
+
+
+def v_kepler(mass, radius):
+    vel = np.sqrt(G * mass / radius)
+    return vel
+
+def v_infall_rot(radius, j0):
+    vel = j0 / radius
+    return vel
+
+def v_kepler_array(masses, radius, inclination, v_lsr=10.2*u.km/u.s):
+	'''
+	Returns the curves, both in the positive and negative values of the radius array given.
+	Returns velocity in km/s
+	Args:
+		masses: array of masses with units
+		radius: array of radii with units
+	'''
+	radius_neg = -1 * radius
+	velocity_peri = []
+	velocity_neg_peri = []
+	for m in masses:
+		velocity = v_kepler(m, radius).to(u.km/u.s) * np.sin(inclination*np.pi/180)
+		velocity_pos = velocity + v_lsr
+		velocity_neg = -1*velocity + v_lsr
+		velocity_peri.append(velocity_pos)
+		velocity_neg_peri.append(velocity_neg)
+	return np.array(velocity_peri), np.array(velocity_neg_peri)
