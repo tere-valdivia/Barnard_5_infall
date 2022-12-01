@@ -1,4 +1,4 @@
-# import aplpy
+import aplpy
 import astropy.units as u
 from astropy.constants import G
 import sys

@@ -23,7 +23,7 @@ Tpeakfile = gaussfitfolder + 'B5-NOEMA+30m-H3CN-10-9_cut_K_1G_fitparams_filtered
 nablavelfile = velfile + '_gradient'
 epsilon = 1e-3 # tolerance to mask values
 # values for LIC
-nbeams = 2
+nbeams = 8
 
 # we need to sample an area of about 2 beams in principle
 # we can try for different sample radii
@@ -71,7 +71,7 @@ if not os.path.exists('gradient_x_{0}beams.fits'.format(nbeams)) or not os.path.
 	fits.writeto('gradient_abs_{0}beams.fits'.format(nbeams), absnabla_map, gradheader, overwrite=True)
 	
 else:
-	nablax_map = fits.getdata('gradient_x_{0}beams.fits'.format(nbeams))
+	nablax_map, gradheader = fits.getdata('gradient_x_{0}beams.fits'.format(nbeams), header=True)
 	nablay_map = fits.getdata('gradient_y_{0}beams.fits'.format(nbeams))
 	absnabla_map = fits.getdata('gradient_abs_{0}beams.fits'.format(nbeams))
 
@@ -80,14 +80,17 @@ from licpy.lic import runlic
 
 L = [4,8,10,20] #pix
 for Li in L:
-	dest = 'gradient_LIC_{0}beams_{1}_absnabla.pdf'.format(nbeams, Li)
+	dest = 'gradient_LIC_{0}beams_{1}_absnabla'.format(nbeams, Li)
 	tex = runlic(nablax_map, nablay_map, Li)
+	
 	fig = plt.figure(figsize=(6,6))
 	ax = fig.add_subplot(111, projection=wcsvel)
 	ax.imshow(tex * absnabla_map, vmin = 0, vmax = 30, origin='lower')
-	fig.savefig(dest, bbox_inches='tight', dpi=100)
-	dest2 = 'gradient_LIC_{0}beams_{1}.pdf'.format(nbeams, Li)
+	fig.savefig(dest+'.pdf', bbox_inches='tight', dpi=100)
+	dest2 = 'gradient_LIC_{0}beams_{1}'.format(nbeams, Li)
 	fig2 = plt.figure(figsize=(6,6))
 	ax2 = fig2.add_subplot(111)
 	ax2.imshow(tex, cmap='Greys', origin='lower')
-	fig2.savefig(dest2, bbox_inches='tight', dpi=100)
+	fig2.savefig(dest2+'.pdf', bbox_inches='tight', dpi=100)
+	
+	fits.writeto(dest2+'.fits', tex, gradheader)
