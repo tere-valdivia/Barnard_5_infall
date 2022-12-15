@@ -4,12 +4,19 @@ from astropy.constants import G
 import sys
 import numpy as np
 from scipy import stats
+import matplotlib as mpl
+from matplotlib import rc
 sys.path.append('/home/mvaldivi/velocity_tools')
 # definition of constants and fuctions
 
 ra_yso = (3 +(47+41.591/60)/60)*15
 dec_yso = 32+(51+43.672/60)/60 # Tobin et al 2016 catalog
 dist_B5 = 302 * u.pc # pc, Zucker et al 2018?
+
+mpl.rcParams['xtick.direction'] = 'in'
+mpl.rcParams['ytick.direction'] = 'in'
+rc('font',**{'family':'serif'})#,'sans-serif':['Helvetica']})
+rc('text', usetex=True)
 
 def plot_aplpy_subfig(image, figure, subplotindex, stretch, vmin, vmax, cmap, vmid=0.01, label_col='k', distance=302., barsize=5000, showframeScalebar=False):
     """
