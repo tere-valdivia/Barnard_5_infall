@@ -7,7 +7,7 @@ import os
 import sys
 from astropy.io import fits
 from astropy.wcs import WCS
-sys.path.append('../B5_NOEMA_30m')
+sys.path.append('../')
 from B5setup import *
 
 # File in K and in km/s
