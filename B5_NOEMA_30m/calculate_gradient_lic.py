@@ -52,7 +52,7 @@ if not os.path.exists('gradient_x_{0}beams.fits'.format(nbeams)) or not os.path.
 	vc_map = np.zeros(np.shape(velfield))
 	absnabla_map = np.zeros(np.shape(velfield))
 	jumped = 0
-	for y, x in np.transpose(filled_indices):
+	for y, x in zip(filled_indices[0], filled_indices[1]):
 		sampleregion = velfield[y-sampleradius:y+sampleradius+1, x-sampleradius:x+sampleradius+1]
 		if np.shape(sampleregion)[0] != np.shape(sampleregion)[1]: 
 			continue
@@ -90,18 +90,16 @@ else:
 
 # LIC visualization
 from licpy.lic import runlic
+from licpy.plot import grey_save
 
 # L is the length of the streamline that will follow subsequent gradients.
 # it should be correlated with the length of the beam
 
 L = np.array([1,2,3,4]) # in radiuslengths
 for Li in L:
-	tex = runlic(nablax_map, nablay_map, Li* equivdiam)
-	tex[np.where(np.isnan(tex))] = 0
-	dest2 = 'gradient_LIC_{0}beams_L{1}'.format(nbeams, Li)
-	fig2 = plt.figure(figsize=(6,6))
-	ax2 = fig2.add_subplot(111)
-	ax2.imshow(tex, cmap='binary', origin='lower')
-	fig2.savefig(dest2+'.pdf', bbox_inches='tight', dpi=100)
-	
-	if not os.path.exists(dest2+'.fits'): fits.writeto(dest2+'.fits', tex, gradheader)
+    dest2 = 'gradient_LIC_{0}beams_L{1}'.format(nbeams, Li)
+    # licpy transposes and inverts the vectors!
+    tex = runlic(nablay_map, nablax_map, Li* equivdiam)
+    tex[np.where(tex==0)] = np.nan
+    grey_save(dest2+'.pdf', tex)
+    if not os.path.exists(dest2+'.fits'): fits.writeto(dest2+'.fits', tex, gradheader)
