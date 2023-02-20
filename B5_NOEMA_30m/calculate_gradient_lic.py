@@ -8,7 +8,8 @@ The only part that uses licpy is for the visualization. The rest should have no 
 
 import numpy as np
 import os
-import scipy.linalg # we only fit a linear plane so we go with easy linear code
+import scipy.linalg # for initial guesses
+from scipy.optimize import curve_fit # to obtain the fit with errors
 from astropy.io import fits
 import astropy.units as u
 import sys
