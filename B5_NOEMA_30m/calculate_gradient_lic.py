@@ -45,6 +45,7 @@ minarea = (np.pi * sampleradius ** 2) / 3 #at least a third of pixels in the are
 print("Running program for a gradient with a width of {} beams".format(nbeams))
 print("The equivalent radius is {0} pixels, the sample radius is {1}, needs a minimum of {2} pixels".format(np.round(equivradius, 0), np.round(sampleradius, 0), np.round(minarea, 0)))
 print(pixsize_pc, ' pc/pix')
+
 def plane(X, A, B, vc):
     xpos, ypos = X
     return A*xpos + B*ypos + vc
@@ -104,7 +105,7 @@ if not os.path.exists(nablavelfile.format(nbeams)+'_x.fits') or not os.path.exis
             e_nablax_map[y, x] = perr[0]
             e_nablay_map[y, x] = perr[1]
             e_vc_map[y, x] = perr[2]
-            e_absnabla_map[y, x] = absnabla_map[y, x] * np.sqrt((e_nablax_map[y, x]/nablax_map[y, x])**2 + (e_nablay_map[y, x]/nablay_map[y, x])**2)
+            e_absnabla_map[y, x] = np.sqrt(perr[0]**2 + perr[1]**2)
     gradheader = velheader.copy()
     gradheader['BUNIT'] = 'km s-1 pc-1'
     fits.writeto(nablavelfile.format(nbeams)+'_x.fits', nablax_map, gradheader, overwrite=True)
