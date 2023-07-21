@@ -7,7 +7,7 @@ Then does the moments in appropiate ranges.
 """
 # cut image to leave out empty space
 
-imagenamebase = "B5-NOEMA+30m-H2CO-1-01-0-00" # was 10-9
+imagenamebase = "B5-NOEMA+30m-HC3N-10-9" # 
 fitsimage = imagenamebase + ".fits"
 cutimage = imagenamebase + "_cut.image"
 cutfits = imagenamebase + "_cut.fits"
@@ -28,9 +28,9 @@ if os.path.exists(kelvinfits):
   mom8image = imagenamebase + "_cut_K.mom8"
   momimages = [mom0image, mom1image, mom2image, mom8image]
   moments = [0,1,2,8]
-  #channels = "19~28" #9.3 to 11.2 km/s for HC3N 10-9
+  channels = "19~28" #9.3 to 11.2 km/s for HC3N 10-9
   #channels = "16~24" #9.2 to 11.2 km/s for HC3N 8-7
-  channels = "17~24" # 9.2 to 11.0 for H2CO
+  #channels = "17~24" # 9.2 to 11.0 for H2CO
 
   for moment, momimage in zip(moments, momimages):
     if not os.path.exists(momimage+".fits"):
